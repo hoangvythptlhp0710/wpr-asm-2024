@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: wpr_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword # Root password (can be changed as needed)
+      MYSQL_DATABASE: wpr2201140110 # Replace with your SID
+      MYSQL_USER: wpr
+      MYSQL_PASSWORD: fit2024
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - wpr_network
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  wpr_network:
+    driver: bridge
