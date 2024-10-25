@@ -1,0 +1,11 @@
+<%- include('layout', { 
+    title: 'Welcome', 
+    user: { fullname: fullname }, 
+    body: `
+        <section>
+            <h2>Welcome, ${fullname}!</h2>
+            <p>Your account has been created successfully, <strong>${fullname}</strong>.</p>
+            <p><a href="/signin">Click here to sign in</a>.</p>
+        </section>
+    `
+}) %>

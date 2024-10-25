@@ -19,10 +19,10 @@ CREATE TABLE IF NOT EXISTS Emails (
 );
 
 -- Insert users
-INSERT INTO Users (email, password) VALUES 
-('a@a.com', '123'),
-('b@b.com', 'password1'),
-('c@c.com', 'password2');
+INSERT INTO Users (fullname, email, password) VALUES 
+('anan', 'a@a.com', '123'),
+('binhbinh', 'b@b.com', 'password1'),
+('chichi', 'c@c.com', 'password2');
 
 -- Insert emails
 INSERT INTO Emails (sender_id, receiver_id, subject, body) VALUES
