@@ -11,8 +11,8 @@ dotenv.config();
 const app = express();
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
-// app.set("view engine", "ejs");
-app.set("view engine", "hbs");
+app.set("view engine", "ejs");
+// app.set("view engine", "hbs");
 app.set("views", path.join(__dirname, "views"));
 
 // MySQL connection pool
@@ -41,6 +41,25 @@ app.get("/", isAuthenticated, (req, res) => {
 //
 app.get("/signup", (req, res) => {
   res.render("signup", { title: "Sign Up", error: null });
+});
+
+app.get("/email/:id", async (req, res) => {
+  const emailId = req.params.id;
+  const loggedInUser = { fullname: req.cookies.fullname }
+  try {
+    const connection = await pool.getConnection();
+    const [emails] = await connection.query("select u.fullname, e.`timestamp`, e.body, e.subject from Emails e join Users u where e.sender_id = u.id and e.id = ?", [emailId]);
+    connection.release();
+
+    if (emails.length > 0) {
+      res.render("emailDetail", { title: "Email Detail", user: loggedInUser, email: emails[0] });
+    } else {
+      res.status(404).send("Email not found");
+    }
+  } catch (err) {
+    console.error("Error fetching email details:", err);
+    res.status(500).send("Error retrieving email details");
+  }
 });
 
 app.post("/signup", async (req, res) => {
@@ -178,9 +197,11 @@ app.post("/signin", async (req, res) => {
 
     if (rows.length > 0) {
       const user = rows[0];
+      console.log(user);
       // Set cookies for user session
       res.cookie("username", username, { maxAge: 900000, httpOnly: true });
       res.cookie("fullname", user.fullname, { maxAge: 900000, httpOnly: true });
+      res.cookie("userId", user.id, { maxAge: 900000, httpOnly: true }); // Save user ID in cookie
       res.redirect("/inbox");
     } else {
       res.render("signin", { title: "Sign In", error: "Invalid credentials" });
@@ -191,50 +212,58 @@ app.post("/signin", async (req, res) => {
   }
 });
 
-// Inbox page route (protected)
-// app.get("/inbox", async (req, res) => {
-//   if (!req.cookies.username) {
-//     return res.redirect("/signin");
-//   }
+app.get("/inbox", async (req, res) => {
+  if (!req.cookies.fullname) {
+    return res.redirect("/signin");
+  }
+
+  const userId = req.cookies.userId;
+  const page = parseInt(req.query.page) || 1; // Get the current page from the query params, default to 1
+  const emailsPerPage = 5;
+  const offset = (page - 1) * emailsPerPage;
 
 //   try {
-//     const connection = await pool.getConnection();
+//     const emails = await fetchEmailsForUser(userId);
+//     console.log(req.cookies.userId); // Fetch emails
+//     console.log('Fetched emails:', emails); // Check what you get here
 
-//     // Assuming receiver_id is the email of the logged-in user
-//     const receiverId = req.cookies.username;
-
-//     // Query to fetch emails for the logged-in user
-//     const [emails] = await connection.query(
-//       "SELECT id, sender_id, receiver_id, subject, body, timestamp FROM Emails WHERE receiver_id = ?",
-//       [receiverId]
-//     );
-
-//     connection.release();
-
-//     // Render the inbox page with user and emails data
-//     res.render("inbox", {
-//       title: "Inbox",
-//       user: { fullname: receiverId },
-//       emails: emails
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     res.send("Error fetching inbox data");
+//     const user = { fullname: req.cookies.fullname }; // Replace with actual user fetching logic
+//     res.render("inbox", { user, emails });
+//   } catch (error) {
+//     console.error("Error fetching emails:", error);
+//     res.status(500).send("Internal Server Error");
 //   }
 // });
 
-app.get("/inbox", (req, res) => {
-  if (!req.cookies.username) {
-      return res.redirect("/signin");
-  }
+try {
+  const connection = await pool.getConnection();
 
-  // Fetch emails for the logged-in user (implement this function)
-  const emails = fetchEmailsForUser(req.cookies.username); // Replace with your actual method to get emails
+  // Query to get the emails for the current page
+  const [emails] = await connection.query(
+    "SELECT e.id, e.sender_id, e.subject, e.`timestamp`, e.body FROM Emails e JOIN Users u where e.receiver_id = u.id and e.receiver_id = ? ORDER BY timestamp DESC LIMIT ? OFFSET ?",
+    [userId, emailsPerPage, offset]
+  );
 
-  // Assume user object includes fullname
-  const user = { fullname: "User's Full Name" }; // Replace with actual user fetching logic
+  // Query to get the total count of emails for pagination
+  const [[{ count }]] = await connection.query(
+    "SELECT COUNT(*) as count FROM Emails WHERE receiver_id = ?",
+    [userId]
+  );
 
-  res.render("inbox", { user, emails });
+  const totalPages = Math.ceil(count / emailsPerPage);
+
+  connection.release();
+
+  res.render("inbox", {
+    user: { fullname: req.cookies.fullname },
+    emails,
+    currentPage: page,
+    totalPages,
+  });
+} catch (err) {
+  console.error("Error fetching emails:", err);
+  res.status(500).send("Error retrieving inbox emails");
+}
 });
 
 
@@ -258,53 +287,25 @@ const requireAuth = (req, res, next) => {
   next();
 };
 
-// Inbox page
-app.get("/inbox", requireAuth, async (req, res) => {
-  try {
-    const connection = await pool.getConnection();
-    const [emails] = await connection.query(
-      `
-      SELECT e.id, e.subject, e.body, e.timestamp, u.fullname AS sender_name 
-      FROM Emails e 
-      JOIN Users u ON e.sender_id = u.id 
-      WHERE e.receiver_id = (SELECT id FROM Users WHERE email = ?)
-      ORDER BY e.timestamp DESC
-    `,
-      [req.cookies.username],
-    );
-    connection.release();
-    res.render("inbox", {
-      title: "Inbox",
-      user: { fullname: req.cookies.fullname },
-      emails,
-    });
-  } catch (err) {
-    console.error(err);
-    res.send("Error loading inbox");
-  }
-});
-
-// Compose, Outbox routes can follow a similar pattern with different logic.
 
 async function fetchEmailsForUser(receiverId) {
   let connection;
 
   try {
       connection = await pool.getConnection();
-
-      // Query to fetch emails where the receiver_id matches the provided user ID
+      console.log(receiverId);
       const [emails] = await connection.query(
-          "SELECT * FROM Emails WHERE receiver_id = ? ORDER BY timestamp DESC",
-          [receiverId]
+          "SELECT e.id, e.sender_id, e.subject, e.`timestamp`, e.body FROM Emails e JOIN Users u where e.receiver_id = u.id and e.receiver_id = ? ORDER BY timestamp DESC LIMIT ? OFFSET ?",
+          [receiverId, emailsPerPage, offset]
       );
 
-      return emails; // Return the list of emails
+      return emails;
   } catch (error) {
       console.error("Error fetching emails:", error);
-      throw error; // Optionally rethrow the error for handling upstream
+      throw error;
   } finally {
       if (connection) {
-          connection.release(); // Release the database connection
+          connection.release();
       }
   }
 }

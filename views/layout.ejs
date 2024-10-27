@@ -7,26 +7,12 @@
     <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-    <header>
-        <div class="header">
-            <% if (user && user.fullname) { %>
-                <h1>Welcome, <%= user.fullname %>!</h1>
-                <a href="/signout">Sign out</a>
-            <% } else { %>
-                <h1>Welcome to my app!</h1>
-            <% } %>
-        </div>
-        <nav class="menu">
-            <ul>
-                <li><a href="/compose">Compose</a></li>
-                <li><a href="/inbox">Inbox</a></li>
-                <li><a href="/outbox">Outbox</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <%- body %>
-    </main>
+    <%- include('partials/header', { user: user }) %>
+    <div class="container">
+        <%- include('partials/sidebar') %>
+        <main>
+            <%- body %>
+        </main>
+    </div>
 </body>
 </html>
-

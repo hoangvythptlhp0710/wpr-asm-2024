@@ -1,0 +1,10 @@
+<header>
+    <div class="header">
+        <% if (user && user.fullname) { %>
+            <h1>Welcome, <%= user.fullname %>!</h1>
+            <a href="/signout">Sign out</a>
+        <% } else { %>
+            <h1>Welcome to my app!</h1>
+        <% } %>
+    </div>
+</header>

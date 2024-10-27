@@ -1,0 +1,12 @@
+<%- include('layout', { 
+    title: 'Email Detail', 
+    user: user, 
+    body: `
+        <section>
+            <h2>${email.subject}</h2>
+            <p><strong>From:</strong> ${email.fullname}</p>
+            <p><strong>Received:</strong> ${new Date(email.timestamp).toLocaleString()}</p>
+            <p>${email.body}</p>
+        </section>
+    `
+}) %>
