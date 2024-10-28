@@ -1,0 +1,76 @@
+<%- include('layout', { 
+    title: 'Compose Email', 
+    user: user, 
+    body: `
+        <section>
+            <h2>Compose Email</h2>
+            <form id="compose-form" enctype="multipart/form-data">
+                <div>
+                    <label for="recipient">Recipient:</label>
+                    <select id="recipient" name="recipient" required>
+                        <option value="">Select a recipient</option>
+                        <% users.forEach(user => { %>
+                            <option value="<%= user.id %>"><%= user.full_name %></option>
+                        <% }) %>
+                    </select>
+                </div>
+                <div>
+                    <label for="subject">Subject:</label>
+                    <input type="text" id="subject" name="subject" placeholder="(no subject)" />
+                </div>
+                <div>
+                    <label for="body">Body:</label>
+                    <textarea id="body" name="body" rows="4" placeholder="Type your message here..."></textarea>
+                </div>
+                <div>
+                    <label for="attachment">Attach a file:</label>
+                    <input type="file" id="attachment" name="attachment" />
+                </div>
+                <button type="submit">Send</button>
+            </form>
+            <div id="message"></div>
+        </section>
+    `
+}) %>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("compose-form");
+    const messageDiv = document.getElementById("message");
+
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault(); // Prevent default form submission
+
+        const formData = new FormData(form);
+        const recipient = formData.get("recipient");
+
+        if (!recipient) {
+            messageDiv.textContent = "Please select a recipient.";
+            messageDiv.style.color = "red";
+            return;
+        }
+
+        try {
+            const response = await fetch("/sendEmail", {
+                method: "POST",
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                messageDiv.textContent = "Email sent successfully!";
+                messageDiv.style.color = "green";
+                form.reset(); // Clear the form
+            } else {
+                messageDiv.textContent = result.message || "Failed to send email.";
+                messageDiv.style.color = "red";
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            messageDiv.textContent = "An error occurred while sending the email.";
+            messageDiv.style.color = "red";
+        }
+    });
+});
+</script>

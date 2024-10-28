@@ -1,0 +1,11 @@
+<%- include('layout', { 
+    title: 'Error', 
+    user: user, 
+    body: `
+        <section>
+            <h2>Error</h2>
+            <p><%= message || "An unexpected error has occurred. Please try again later." %></p>
+            <a href="/" class="btn">Go Back to Home</a>
+        </section>
+    `
+}) %>

@@ -4,15 +4,17 @@ const bodyParser = require("body-parser");
 const mysql = require("mysql2/promise");
 const dotenv = require("dotenv");
 const path = require("path");
+const { log } = require("console");
 
 // Load environment variables
 dotenv.config();
 
 const app = express();
+const multer = require('multer');
 app.use(cookieParser());
+app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
-// app.set("view engine", "hbs");
 app.set("views", path.join(__dirname, "views"));
 
 // MySQL connection pool
@@ -37,8 +39,6 @@ app.get("/", isAuthenticated, (req, res) => {
 });
 
 // Sign-up page route
-// Sign-in page route
-//
 app.get("/signup", (req, res) => {
   res.render("signup", { title: "Sign Up", error: null });
 });
@@ -121,64 +121,6 @@ app.post("/signup", async (req, res) => {
     res.send("Error signing up");
   }
 });
-// app.post("/signup", async (req, res) => {
-//   const { fullname, username, password, confirmPassword } = req.body;
-
-//   // Validate input
-//   if (!fullname || !username || !password || !confirmPassword) {
-//     return res.render("signup", {
-//       title: "Sign Up",
-//       error: "All fields are required.",
-//     });
-//   }
-
-//   if (password.length < 6) {
-//     return res.render("signup", {
-//       title: "Sign Up",
-//       error: "Password must be at least 6 characters long.",
-//     });
-//   }
-
-//   if (password !== confirmPassword) {
-//     return res.render("signup", {
-//       title: "Sign Up",
-//       error: "Passwords do not match.",
-//     });
-//   }
-
-//   try {
-//     const connection = await pool.getConnection();
-
-//     // Check if the email already exists
-//     const [existingUser] = await connection.query(
-//       "SELECT * FROM Users WHERE email = ?",
-//       [username],
-//     );
-//     if (existingUser.length > 0) {
-//       connection.release();
-//       return res.render("signup", {
-//         title: "Sign Up",
-//         error: "Email address is already in use.",
-//       });
-//     }
-
-//     // Insert new user into the database
-//     await connection.query(
-//       "INSERT INTO Users (fullname, email, password) VALUES (?, ?, ?)",
-//       [fullname, username, password],
-//     );
-//     connection.release();
-
-//     // Show welcome message and link to sign-in
-//     res.render("welcome", {
-//       title: "Welcome",
-//       message: "Account created successfully! You can now sign in.",
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     res.send("Error signing up");
-//   }
-// });
 
 app.get("/signin", isAuthenticated, (req, res) => {
   res.render("signin", { title: "Sign In", error: null });
@@ -213,8 +155,8 @@ app.post("/signin", async (req, res) => {
 });
 
 app.get("/inbox", async (req, res) => {
-  if (!req.cookies.fullname) {
-    return res.redirect("/signin");
+  if (!req.cookies.userId) {
+    res.render("accessDenied");
   }
 
   const userId = req.cookies.userId;
@@ -222,25 +164,12 @@ app.get("/inbox", async (req, res) => {
   const emailsPerPage = 5;
   const offset = (page - 1) * emailsPerPage;
 
-//   try {
-//     const emails = await fetchEmailsForUser(userId);
-//     console.log(req.cookies.userId); // Fetch emails
-//     console.log('Fetched emails:', emails); // Check what you get here
-
-//     const user = { fullname: req.cookies.fullname }; // Replace with actual user fetching logic
-//     res.render("inbox", { user, emails });
-//   } catch (error) {
-//     console.error("Error fetching emails:", error);
-//     res.status(500).send("Internal Server Error");
-//   }
-// });
-
 try {
   const connection = await pool.getConnection();
 
   // Query to get the emails for the current page
   const [emails] = await connection.query(
-    "SELECT e.id, e.sender_id, e.subject, e.`timestamp`, e.body FROM Emails e JOIN Users u where e.receiver_id = u.id and e.receiver_id = ? ORDER BY timestamp DESC LIMIT ? OFFSET ?",
+    "SELECT e.id, u.fullname, e.subject, e.`timestamp`, e.body FROM Emails e JOIN Users u where e.sender_id = u.id and e.receiver_id = ? ORDER BY timestamp DESC LIMIT ? OFFSET ?",
     [userId, emailsPerPage, offset]
   );
 
@@ -266,7 +195,6 @@ try {
 }
 });
 
-
 // Sign-out route
 app.get("/signout", (req, res) => {
   res.clearCookie("username");
@@ -279,14 +207,45 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-// Middleware to protect routes
-const requireAuth = (req, res, next) => {
+app.put("/deleteEmails", async (req, res) => {
   if (!req.cookies.username) {
     return res.status(403).render("accessDenied");
   }
-  next();
-};
 
+  console.log("hi");
+  
+
+  const userId = req.cookies.userId;
+  console.log("UserID: " + userId);
+   // The user deleting the emails
+  console.log(JSON.stringify(req.body));
+  
+  const { emailIds } = req.body;  
+  console.log("Email Ids: " + emailIds);
+  
+
+  if (!Array.isArray(emailIds) || emailIds.length === 0) {
+    return res.status(400).json({ message: "No emails selected for deletion." });
+  }
+
+
+  try {
+    const connection = await pool.getConnection();
+
+    // Delete emails for this user only
+    await connection.query(
+      "DELETE FROM Emails WHERE id IN (?) AND receiver_id = ?",
+      [emailIds, userId]
+    );
+
+    connection.release();
+
+    res.json({ message: "Emails deleted successfully." });
+  } catch (err) {
+    console.error("Error deleting emails:", err);
+    res.status(500).json({ message: "Failed to delete emails." });
+  }
+});
 
 async function fetchEmailsForUser(receiverId) {
   let connection;
@@ -309,3 +268,5 @@ async function fetchEmailsForUser(receiverId) {
       }
   }
 }
+
+const upload = multer({ dest: 'uploads/' }); // Configure multer for file uploads
