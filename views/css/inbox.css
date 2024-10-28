@@ -1,29 +1,4 @@
-<%- include('layout', { 
-    title: 'Email Detail', 
-    user: user, 
-    body: `
-        <section>
-            <h2>${email.subject}</h2>
-            <p><strong>From:</strong> ${email.fullname}</p>
-            <p><strong>Received:</strong> ${new Date(email.timestamp).toLocaleString()}</p>
-            <p>${email.body}</p>
-            ${email.attachments && email.attachments.length > 0 ? `
-                <h3>Attachments:</h3>
-                <ul>
-                    ${email.attachments.map(attachment => `
-                        <li>
-                            <a href="/download/${attachment.filename}" download>${attachment.filename}</a>
-                        </li>
-                    `).join('')}
-                </ul>
-            ` : ''}
-        </section>
-    `
-}) %>
-
-<style>
-
-    /* General styles */
+/* General styles */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -90,4 +65,29 @@ td a:hover {
 input[type="checkbox"] {
     cursor: pointer;
 }
-</style>
+
+/* Pagination styles */
+.pagination {
+    margin-top: 20px;
+}
+
+.pagination a {
+    display: inline-block;
+    padding: 8px 12px;
+    margin: 0 5px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.pagination a:hover {
+    background-color: #0056b3;
+}
+
+.pagination .active {
+    background-color: #0056b3;
+    pointer-events: none;
+    opacity: 0.6;
+}

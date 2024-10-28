@@ -15,7 +15,8 @@ CREATE TABLE IF NOT EXISTS Emails (
     body TEXT NOT NULL,
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (sender_id) REFERENCES Users(id),
-    FOREIGN KEY (receiver_id) REFERENCES Users(id)
+    FOREIGN KEY (receiver_id) REFERENCES Users(id),
+    attachment VARCHAR(255) 
 );
 
 -- Insert users

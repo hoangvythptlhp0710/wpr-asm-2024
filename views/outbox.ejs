@@ -1,18 +1,18 @@
 <%- include('layout', { 
-    title: 'Inbox', 
+    title: 'Outbox', 
     user: user, 
     body: `
         <section>
-            <h2>Inbox</h2>
+            <h2>Outbox</h2>
             <button id="delete-selected">Delete</button>
             <table>
                 <thead>
                     <tr>
                         <th><input type="checkbox" id="select-all" /></th>
-                        <th>Sender</th>
+                        <th>Recipient</th>
                         <th>Subject</th>
-                        <th>Body</th>
                         <th>Received Time</th>
+                        <th>Body</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -37,20 +37,17 @@
                 </tbody>
             </table>
             <div class="pagination">
-                ${currentPage > 1 ? `<a href="/inbox?page=${currentPage - 1}">Previous</a>` : ''}
+                ${currentPage > 1 ? `<a href="/outbox?page=${currentPage - 1}"><<</a>` : ''}
                 ${Array.from({ length: totalPages }, (_, i) => `
-                    <a href="/inbox?page=${i + 1}" class="${i + 1 === currentPage ? 'active' : ''}">${i + 1}</a>
+                    <a href="/outbox?page=${i + 1}" class="${i + 1 === currentPage ? 'active' : ''}">${i + 1}</a>
                 `).join('')}
-                ${currentPage < totalPages ? `<a href="/inbox?page=${currentPage + 1}">Next</a>` : ''}
+                ${currentPage < totalPages ? `<a href="/outbox?page=${currentPage + 1}">>></a>` : ''}
             </div>
         </section>
     `
 }) %>
 
-
-
 <style>
-
 /* General styles */
 body {
     font-family: Arial, sans-serif;

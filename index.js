@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const mysql = require("mysql2/promise");
 const dotenv = require("dotenv");
 const path = require("path");
+const fs = require("fs");
 const { log } = require("console");
 
 // Load environment variables
@@ -11,6 +12,7 @@ dotenv.config();
 
 const app = express();
 const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
 app.use(cookieParser());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -48,7 +50,7 @@ app.get("/email/:id", async (req, res) => {
   const loggedInUser = { fullname: req.cookies.fullname }
   try {
     const connection = await pool.getConnection();
-    const [emails] = await connection.query("select u.fullname, e.`timestamp`, e.body, e.subject from Emails e join Users u where e.sender_id = u.id and e.id = ?", [emailId]);
+    const [emails] = await connection.query("select u.fullname, e.`timestamp`, e.body, e.subject, e.attachment from Emails e join Users u where e.sender_id = u.id and e.id = ?", [emailId]);
     connection.release();
 
     if (emails.length > 0) {
@@ -154,6 +156,35 @@ app.post("/signin", async (req, res) => {
   }
 });
 
+app.get("/compose", async (req, res) => {
+  if (!req.cookies.username) {
+    return res.status(403).render("accessDenied");
+  }
+
+  try {
+    const connection = await pool.getConnection();
+
+    // Fetch other users to populate the recipient dropdown
+    const [users] = await connection.query("SELECT id, fullname FROM Users WHERE id != ?", [req.cookies.userId]);
+    console.log(JSON.stringify(users));
+    
+
+    connection.release();
+
+    // Assuming you have the user's information in the cookies
+    const user = {
+      id: req.cookies.userId,
+      fullname: req.cookies.fullname// Adjust according to your cookie structure
+    };
+
+    res.render("compose", { users, user });
+  } catch (err) {
+    console.error("Error fetching users:", err);
+    res.status(500).render("error", { message: "Error loading compose page." });
+  }
+});
+
+
 app.get("/inbox", async (req, res) => {
   if (!req.cookies.userId) {
     res.render("accessDenied");
@@ -247,6 +278,94 @@ app.put("/deleteEmails", async (req, res) => {
   }
 });
 
+app.post("/sendEmail", upload.single('attachment'), async (req, res) => {
+    if (!req.cookies.username) {
+        return res.status(403).render("accessDenied");
+    }
+
+    const { recipient, subject, body } = req.body;
+
+    // Check if recipient is selected
+    if (!recipient) {
+        return res.status(400).json({ message: "Recipient is required." });
+    }
+
+    try {
+        const connection = await pool.getConnection();
+
+        // Construct your email insert query here
+        await connection.query(
+            "INSERT INTO Emails (sender_id, receiver_id, subject, body, attachment) VALUES (?, ?, ?, ?, ?)",
+            [req.cookies.userId, recipient, subject || '(no subject)', body || '', req.file ? req.file.filename : null]
+        );
+
+        connection.release();
+
+        res.json({ message: "Email sent successfully." });
+    } catch (err) {
+        console.error("Error sending email:", err);
+        res.status(500).json({ message: "Failed to send email." });
+    }
+});
+
+app.get("/outbox", async (req, res) => {
+  if (!req.cookies.userId) {
+    res.render("accessDenied");
+  }
+
+  const userId = req.cookies.userId;
+  const page = parseInt(req.query.page) || 1; // Get the current page from the query params, default to 1
+  const emailsPerPage = 5;
+  const offset = (page - 1) * emailsPerPage;
+
+try {
+  const connection = await pool.getConnection();
+
+  // Query to get the emails for the current page
+  const [emails] = await connection.query(
+    "SELECT e.id, u.fullname, e.subject, e.`timestamp`, e.body FROM Emails e JOIN Users u where e.receiver_id = u.id and e.sender_id = ? ORDER BY timestamp DESC LIMIT ? OFFSET ?",
+    [userId, emailsPerPage, offset]
+  );
+
+  // Query to get the total count of emails for pagination
+  const [[{ count }]] = await connection.query(
+    "SELECT COUNT(*) as count FROM Emails WHERE sender_id = ?",
+    [userId]
+  );
+
+  const totalPages = Math.ceil(count / emailsPerPage);
+
+  connection.release();
+
+  res.render("outbox", {
+    user: { fullname: req.cookies.fullname },
+    emails,
+    currentPage: page,
+    totalPages,
+  });
+} catch (err) {
+  console.error("Error fetching emails:", err);
+  res.status(500).send("Error retrieving outbox emails");
+}
+});
+
+app.get("/download/:filename", (req, res) => {
+    const filename = req.params.filename;
+    const filePath = path.join(__dirname, 'uploads', filename); // Adjust the path as necessary
+
+    // Check if the file exists and send it
+    fs.access(filePath, fs.constants.F_OK, (err) => {
+        if (err) {
+            return res.status(404).send('File not found');
+        }
+        res.download(filePath, filename, (err) => {
+            if (err) {
+                console.error("Error downloading file:", err);
+            }
+        });
+    });
+});
+
 async function fetchEmailsForUser(receiverId) {
   let connection;
 
@@ -268,5 +387,3 @@ async function fetchEmailsForUser(receiverId) {
       }
   }
 }
-
-const upload = multer({ dest: 'uploads/' }); // Configure multer for file uploads

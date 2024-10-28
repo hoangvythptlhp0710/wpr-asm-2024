@@ -3,27 +3,25 @@
     user: user, 
     body: `
         <section>
-            <h2>Compose Email</h2>
+            <h2>New Email</h2>
             <form id="compose-form" enctype="multipart/form-data">
                 <div>
-                    <label for="recipient">Recipient:</label>
                     <select id="recipient" name="recipient" required>
                         <option value="">Select a recipient</option>
-                        <% users.forEach(user => { %>
-                            <option value="<%= user.id %>"><%= user.full_name %></option>
-                        <% }) %>
+                        ${Array.isArray(users) && users.length > 0 
+                            ? users.map(user => `
+                                <option value="${user.id}">${user.fullname}</option>
+                            `).join('') 
+                            : '<option value="">No users available</option>'}
                     </select>
                 </div>
                 <div>
-                    <label for="subject">Subject:</label>
                     <input type="text" id="subject" name="subject" placeholder="(no subject)" />
                 </div>
-                <div>
-                    <label for="body">Body:</label>
-                    <textarea id="body" name="body" rows="4" placeholder="Type your message here..."></textarea>
+                <div id="textbox">
+                    <textarea id="body" name="body" rows="4"></textarea>
                 </div>
                 <div>
-                    <label for="attachment">Attach a file:</label>
                     <input type="file" id="attachment" name="attachment" />
                 </div>
                 <button type="submit">Send</button>
@@ -32,6 +30,77 @@
         </section>
     `
 }) %>
+
+<style>
+    /* General styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f4f4;
+}
+
+/* Compose Section */
+section {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+/* Heading */
+h2 {
+    margin-top: 0;
+    color: #333;
+}
+
+/* Form styles */
+form {
+    display: flex;
+    flex-direction: column; /* Stack the form elements vertically */
+}
+
+/* Label styles */
+label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+/* Input and textarea styles */
+input[type="text"],
+input[type="file"],
+select,
+textarea {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 15px; /* Spacing between elements */
+    font-size: 16px;
+}
+
+/* Button styles */
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+/* Message area */
+#message {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #333; /* Default text color */
+}
+
+</style>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
