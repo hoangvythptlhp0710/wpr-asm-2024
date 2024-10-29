@@ -1,3 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inbox</title>
+    <link rel="stylesheet" href="./css/outbox.css" />
+  </head>
+   <body>
 <%- include('layout', { 
     title: 'Outbox', 
     user: user, 
@@ -46,94 +55,6 @@
         </section>
     `
 }) %>
-
-<style>
-/* General styles */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 20px;
-    background-color: #f4f4f4;
-}
-
-/* Inbox Section */
-section {
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-}
-
-/* Heading */
-h2 {
-    margin-top: 0;
-    color: #333;
-}
-
-/* Button styles */
-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-/* Table styles */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-th, td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-th {
-    background-color: #f2f2f2;
-}
-
-td a {
-    color: #007bff;
-    text-decoration: none;
-}
-
-td a:hover {
-    text-decoration: underline;
-}
-
-/* Checkbox styles */
-input[type="checkbox"] {
-    cursor: pointer;
-}
-.pagination {
-    margin-top: 20px;
-    text-align: center; /* Center align the pagination links */
-}
-
-.pagination a {
-    margin: 0 5px;
-    padding: 5px 10px;
-    text-decoration: none;
-    color: #007bff;
-}
-
-.pagination a.active {
-    font-weight: bold;
-    text-decoration: underline;
-}
-
-  </style>
-
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   const deleteButton = document.getElementById("delete-selected");
@@ -159,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			console.log(body);
 			
       try {
-        const response = await fetch("/deleteEmails", {
+        const response = await fetch("/deleteOutboxEmails", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: body
@@ -184,3 +105,5 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 </script>
+</body>
+</html>

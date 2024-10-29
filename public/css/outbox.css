@@ -5,6 +5,7 @@ body {
     background: linear-gradient(135deg, #e0eafc, #cfdef3);
 }
 
+/* Inbox Section */
 section {
     background: #fff;
     border-radius: 8px;
@@ -12,11 +13,13 @@ section {
     padding: 20px;
 }
 
+/* Heading */
 h2 {
     margin-top: 0;
     color: #333;
 }
 
+/* Button styles */
 button {
     background-color: #007bff;
     color: white;
@@ -31,6 +34,7 @@ button:hover {
     background-color: #0056b3;
 }
 
+/* Table styles */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -56,12 +60,13 @@ td a:hover {
     text-decoration: underline;
 }
 
+/* Checkbox styles */
 input[type="checkbox"] {
     cursor: pointer;
 }
 .pagination {
     margin-top: 20px;
-    text-align: center;
+    text-align: center; /* Center align the pagination links */
 }
 
 .pagination a {

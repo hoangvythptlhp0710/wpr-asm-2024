@@ -264,12 +264,14 @@ app.put("/deleteEmails", async (req, res) => {
 
   try {
     const connection = await pool.getConnection();
-
     // Delete emails for this user only
-    await connection.query(
+    const deleteResponse = await connection.query(
       "DELETE FROM Emails WHERE id IN (?) AND receiver_id = ?",
       [emailIds, userId]
     );
+
+    console.log("Log: " + deleteResponse);
+
 
     connection.release();
 
@@ -389,3 +391,45 @@ async function fetchEmailsForUser(receiverId) {
       }
   }
 }
+
+app.put("/deleteOutboxEmails", async (req, res) => {
+  if (!req.cookies.username) {
+    return res.status(403).render("accessDenied");
+  }
+
+  console.log("hi");
+  
+
+  const userId = req.cookies.userId;
+  console.log("UserID: " + userId);
+   // The user deleting the emails
+  console.log(JSON.stringify(req.body));
+  
+  const { emailIds } = req.body;  
+  console.log("Email Ids: " + emailIds);
+  
+
+  if (!Array.isArray(emailIds) || emailIds.length === 0) {
+    return res.status(400).json({ message: "No emails selected for deletion." });
+  }
+
+
+  try {
+    const connection = await pool.getConnection();
+    // Delete emails for this user only
+    const deleteResponse = await connection.query(
+      "DELETE FROM Emails WHERE id IN (?) AND sender_id = ?",
+      [emailIds, userId]
+    );
+
+    console.log("Log: " + deleteResponse);
+
+
+    connection.release();
+
+    res.json({ message: "Emails deleted successfully." });
+  } catch (err) {
+    console.error("Error deleting emails:", err);
+    res.status(500).json({ message: "Failed to delete emails." });
+  }
+});

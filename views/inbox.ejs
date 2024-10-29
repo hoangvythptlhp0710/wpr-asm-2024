@@ -1,10 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inbox</title>
+    <link rel="stylesheet" href="./css/inbox.css" />
+  </head>
+   <body>
+
 <%- include('layout', { 
-    title: 'Inbox', 
-    user: user, 
+  title: 'Inbox', 
+   user: user, 
     body: `
-        <section>
-            <h2>Inbox</h2>
-            <button id="delete-selected">Delete</button>
+       <section>
+           <h2>Inbox</h2>
+          <button id="delete-selected">Delete</button>
             <table>
                 <thead>
                     <tr>
@@ -23,15 +33,15 @@
                             <td><a href="/email/${email.id}">${email.subject}</a></td>
                             <td>${email.body}</td>
                             <td>${new Date(email.timestamp).toLocaleString('vi-VN', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false, // Use 24-hour format
-})}
-</td>
+                  year: 'numeric',
+                  month: '2-digit',
+                  day: '2-digit',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  second: '2-digit',
+                  hour12: false, // Use 24-hour format
+              })}
+              </td>
                         </tr>
                     `).join('') : '<tr><td colspan="4">No emails found.</td></tr>'}
                 </tbody>
@@ -99,3 +109,5 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 </script>
+</body>
+</html>
