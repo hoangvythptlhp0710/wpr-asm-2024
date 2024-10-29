@@ -1,13 +1,9 @@
-/* homepage.css */
-
-/* General Reset */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Body Style */
 body {
     font-family: Arial, sans-serif;
     display: flex;
@@ -18,7 +14,6 @@ body {
     color: #333;
 }
 
-/* Main Container */
 .container {
     text-align: center;
     padding: 2rem;
@@ -32,7 +27,7 @@ body {
 /* Heading Style */
 h1 {
     font-size: 2em;
-    margin-bottom: 1.5em;
+    margin-bottom: 10px;
     color: #333;
 }
 
@@ -42,8 +37,26 @@ a {
     text-decoration: none;
     font-size: 1.1em;
     font-weight: bold;
-    margin: 0 0.5em;
     transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.child {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em; /* Adjusts the space between "Sign up" and "Sign in" */
+}
+
+/* Link Styles */
+.child a {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 1.1em;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.child a:hover {
+    color: #0056b3;
+    transform: scale(1.05);
 }
 
 a:hover {
@@ -51,7 +64,6 @@ a:hover {
     transform: scale(1.05);
 }
 
-/* Hover Underline Effect */
 a::after {
     content: '';
     display: block;
@@ -65,12 +77,6 @@ a:hover::after {
     width: 100%;
 }
 
-/* Spacing */
-a:first-of-type {
-    margin-right: 1em;
-}
-
-/* Additional Media Queries for Small Screens */
 @media (max-width: 480px) {
     .container {
         padding: 1.5rem;

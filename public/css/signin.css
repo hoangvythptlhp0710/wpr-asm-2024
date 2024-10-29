@@ -8,7 +8,7 @@ body {
     align-items: center;
     min-height: 100vh;
     margin: 0;
-    background-color: #f0f2f5;
+    background: linear-gradient(135deg, #e0eafc, #cfdef3);
 }
 
 /* Heading */

@@ -1,98 +1,43 @@
-/* General Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-/* Body Style */
-body {
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #f0f2f5;
-    color: #333;
-}
-
-/* Container for Sidebar and Main Content */
-.container {
-    text-align: center;
-    padding: 16px;
-    border-radius: 8px;
-    background-color: #fff;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    max-width: 600px;
-    width: 90%;
-
-}
-
-.child {
-    display: flex;
-    justify-content: center;
-}
-
 /* Header Styles */
 .header {
-    background-color: #007bff;
-    color: #fff;
-    padding: 1em;
-    text-align: center;
-    width: 100%;
+    display: flex; /* Use flexbox for layout */
+    justify-content: space-between; /* Space between items */
+    align-items: center; /* Center items vertically */
+    padding: 10px 20px; /* Add some padding */
+    background-color: #f0f2f5; /* Header background color */
+    border-bottom: 1px solid #ddd; /* Optional: Add a border at the bottom */
 }
 
-.header h1 {
-    font-size: 1.5em;
-    margin-bottom: 0.5em;
+/* Title Styles */
+.title {
+    flex-grow: 1; /* Allow the title to take up remaining space */
 }
 
-.header a {
-    color: #fff;
-    text-decoration: none;
-    background: #ff5c5c;
-    padding: 0.5em 1em;
-    border-radius: 4px;
-    font-size: 1em;
+.title h1 {
+    font-size: 24px; /* Adjust the font size */
+    color: #333; /* Title color */
+    margin: 0; /* Remove default margin */
 }
 
-.header a:hover {
-    background-color: #ff4040;
+/* Username Styles */
+.username {
+    display: flex; /* Use flexbox for layout */
+    align-items: center; /* Center items vertically */
 }
 
-/* Sidebar Styles */
-.sidebar {
-    width: 200px;
-    background-color: #333;
-    color: #fff;
+.username h1 {
+    font-size: 20px; /* Adjust the font size for the username */
+    color: #007bff; /* Color for the username */
+    margin: 0 10px 0 0; /* Margin between username and sign out link */
 }
 
-.sidebar nav ul {
-    list-style: none;
-    padding: 1em;
+.username a {
+    color: #007bff; /* Color for the sign out link */
+    text-decoration: none; /* Remove underline */
+    font-size: 16px; /* Font size for the link */
+    transition: color 0.3s; /* Smooth transition for hover effect */
 }
 
-.sidebar nav ul li {
-    margin: 1em 0;
-}
-
-.sidebar nav ul li a {
-    color: #ddd;
-    text-decoration: none;
-    font-size: 1.1em;
-    padding: 0.5em;
-    display: block;
-    transition: color 0.3s, background 0.3s;
-}
-
-.sidebar nav ul li a:hover {
-    color: #fff;
-    background-color: #555;
-}
-
-/* Main Content Styles */
-main {
-    flex: 1;
-    padding: 2em;
-    background-color: #f9f9f9;
+.username a:hover {
+    color: #0056b3; /* Darker color on hover */
 }

@@ -1,10 +1,12 @@
 <header>
     <div class="header">
         <% if (user && user.fullname) { %>
-            <h1>Welcome, <%= user.fullname %>!</h1>
-            <a href="/signout">Sign out</a>
-        <% } else { %>
-            <h1>Welcome to my app!</h1>
+            <div class="title">
+            <h1>Welcome to eMail!</h1>
+            </div>
+            <div class="username">
+            <h1><%= user.fullname %>!</h1>
+            <a href="/signout">Sign out</a></div>
         <% } %>
     </div>
 </header>
