@@ -1,0 +1,86 @@
+/* homepage.css */
+
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body Style */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #e0eafc, #cfdef3);
+    color: #333;
+}
+
+/* Main Container */
+.container {
+    text-align: center;
+    padding: 2rem;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    max-width: 600px;
+    width: 90%;
+}
+
+/* Heading Style */
+h1 {
+    font-size: 2em;
+    margin-bottom: 1.5em;
+    color: #333;
+}
+
+/* Link Styles */
+a {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 1.1em;
+    font-weight: bold;
+    margin: 0 0.5em;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+a:hover {
+    color: #0056b3;
+    transform: scale(1.05);
+}
+
+/* Hover Underline Effect */
+a::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 2px;
+    background: #0056b3;
+    transition: width 0.3s ease;
+}
+
+a:hover::after {
+    width: 100%;
+}
+
+/* Spacing */
+a:first-of-type {
+    margin-right: 1em;
+}
+
+/* Additional Media Queries for Small Screens */
+@media (max-width: 480px) {
+    .container {
+        padding: 1.5rem;
+    }
+
+    h1 {
+        font-size: 1.5em;
+    }
+
+    a {
+        font-size: 1em;
+    }
+}

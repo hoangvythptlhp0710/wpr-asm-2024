@@ -65,29 +65,19 @@ td a:hover {
 input[type="checkbox"] {
     cursor: pointer;
 }
-
-/* Pagination styles */
 .pagination {
     margin-top: 20px;
+    text-align: center; /* Center align the pagination links */
 }
 
 .pagination a {
-    display: inline-block;
-    padding: 8px 12px;
     margin: 0 5px;
-    background-color: #007bff;
-    color: white;
-    border-radius: 5px;
+    padding: 5px 10px;
     text-decoration: none;
-    transition: background-color 0.3s;
+    color: #007bff;
 }
 
-.pagination a:hover {
-    background-color: #0056b3;
-}
-
-.pagination .active {
-    background-color: #0056b3;
-    pointer-events: none;
-    opacity: 0.6;
+.pagination a.active {
+    font-weight: bold;
+    text-decoration: underline;
 }
