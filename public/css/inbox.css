@@ -17,6 +17,39 @@ h2 {
     color: #333;
 }
 
+/* Container for Title and Delete Button */
+.title-delete {
+    display: flex;
+    align-items: center; /* Center items vertically */
+    justify-content: space-between; /* Space between title and button */
+    margin-bottom: 20px;
+}
+
+/* Delete Button Styling */
+#delete-selected {
+    display: flex;
+    align-items: center; /* Center image and text vertically */
+    padding: 8px 12px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #e74c3c; /* Delete button color */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#delete-selected img {
+    margin-right: 8px; /* Space between icon and text */
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#delete-selected:hover {
+    background-color: #c0392b; /* Darker color on hover */
+}
+
+
 button {
     background-color: #007bff;
     color: white;

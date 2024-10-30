@@ -6,9 +6,23 @@
     <title><%= title %></title>
     <link rel="stylesheet" href="./css/layout.css">
 </head>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    const sidebar = document.querySelector(".sidebar");
+    const toggleButton = document.getElementById("sidebarToggle");
+    const container = document.querySelector(".container");
+
+    toggleButton.addEventListener("click", function () {
+        sidebar.classList.toggle("show");
+        container.classList.toggle("shifted");
+    });
+});
+
+</script>
 <body>
-    <%- include('partials/header', { user: user }) %>
-    <div class="container">
+    <%- include('partials/header', { user: user }) %>   
+     <div class="container">
+    <button id="sidebarToggle" class="sidebar-toggle">☰</button>
         <%- include('partials/sidebar') %>
         <main>
             <%- body %>

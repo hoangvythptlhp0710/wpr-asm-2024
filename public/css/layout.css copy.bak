@@ -1,0 +1,42 @@
+.header {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 10px 20px;
+    background-color: #f0f2f5; 
+    border-bottom: 1px solid #ddd; 
+}
+
+
+.title {
+    flex-grow: 1; 
+}
+
+.title h1 {
+    font-size: 24px; /* Adjust the font size */
+    color: #333; /* Title color */
+    margin: 0; /* Remove default margin */
+}
+
+/* Username Styles */
+.username {
+    display: flex; /* Use flexbox for layout */
+    align-items: center; /* Center items vertically */
+}
+
+.username h1 {
+    font-size: 20px; /* Adjust the font size for the username */
+    color: #007bff; /* Color for the username */
+    margin: 0 10px 0 0; /* Margin between username and sign out link */
+}
+
+.username a {
+    color: #007bff; /* Color for the sign out link */
+    text-decoration: none; /* Remove underline */
+    font-size: 16px; /* Font size for the link */
+    transition: color 0.3s; /* Smooth transition for hover effect */
+}
+
+.username a:hover {
+    color: #0056b3; /* Darker color on hover */
+}

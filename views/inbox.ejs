@@ -1,20 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Inbox</title>
-    <link rel="stylesheet" href="./css/inbox.css" />
-  </head>
-   <body>
 
-<%- include('layout', { 
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inbox</title>
+  <link rel="stylesheet" href="./css/inbox.css" />
+</head>
+
+<body>
+
+  <%- include('layout', { 
   title: 'Inbox', 
    user: user, 
     body: `
        <section>
+        <div class="title-delete">
            <h2>Inbox</h2>
-          <button id="delete-selected">Delete</button>
+          <button id="delete-selected"> 
+          <img src="./css/delete.png" alt="Button Icon" width="20" height="20">
+    Delete
+          </button>
+          </div>
+
             <table>
                 <thead>
                     <tr>
@@ -59,55 +67,60 @@
 
 
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const deleteButton = document.getElementById("delete-selected");
-	console.log("This is delete button");
-	
-  const selectAllCheckbox = document.getElementById("select-all");
-	console.log("This is checkbox button")
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const deleteButton = document.getElementById("delete-selected");
+      console.log("This is delete button");
 
-  selectAllCheckbox.addEventListener("click", () => {
-    document.querySelectorAll("input[name='emailIds']").forEach(checkbox => {
-      checkbox.checked = selectAllCheckbox.checked;
-    });
-  });
+      const selectAllCheckbox = document.getElementById("select-all");
+      console.log("This is checkbox button")
 
-  deleteButton.addEventListener("click", async () => {
-    // Gather only checked checkboxes
-    const selectedEmailIds = Array.from(document.querySelectorAll("input[name='emailIds']:checked"))
-      .map(checkbox => checkbox.value);
-    
-    if (selectedEmailIds.length > 0) {
-
-			const body = JSON.stringify({ emailIds: selectedEmailIds});
-			console.log(body);
-			
-      try {
-        const response = await fetch("/deleteEmails", {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: body
+      selectAllCheckbox.addEventListener("click", () => {
+        document.querySelectorAll("input[name='emailIds']").forEach(checkbox => {
+          checkbox.checked = selectAllCheckbox.checked;
         });
+      });
 
-				console.log("Response: " + JSON.stringify(response));
-				
-        if (response.ok) {
-          selectedEmailIds.forEach(id => {
-            const row = document.getElementById(`email-row-${id}`);
-            if (row) row.remove();
+      deleteButton.addEventListener("click", async () => {
+        // Gather only checked checkboxes
+        const selectedEmailIds = Array.from(document.querySelectorAll("input[name='emailIds']:checked"))
+          .map(checkbox => checkbox.value);
+
+        if (selectedEmailIds.length > 0) {
+
+          const body = JSON.stringify({
+            emailIds: selectedEmailIds
           });
+          console.log(body);
+
+          try {
+            const response = await fetch("/deleteEmails", {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: body
+            });
+
+            console.log("Response: " + JSON.stringify(response));
+
+            if (response.ok) {
+              selectedEmailIds.forEach(id => {
+                const row = document.getElementById(`email-row-${id}`);
+                if (row) row.remove();
+              });
+            } else {
+              console.error("Failed to delete emails.");
+            }
+          } catch (error) {
+            console.error("Error:", error);
+          }
         } else {
-          console.error("Failed to delete emails.");
+          alert("Please select at least one email to delete.");
         }
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    } else {
-      alert("Please select at least one email to delete.");
-    }
-  });
-});
-</script>
+      });
+    });
+  </script>
 </body>
+
 </html>
