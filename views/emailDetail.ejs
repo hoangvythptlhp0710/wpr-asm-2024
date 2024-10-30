@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Email Detail</title>
-    <link rel="stylesheet" href="./css/mail.css" />
-  </head>
-   <body>
 
-<%- include('layout', { 
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Email Detail</title>
+  <link rel="stylesheet" href="./css/mail.css" />
+</head>
+
+<body>
+
+  <%- include('layout', { 
     title: 'Email Detail', 
     user: user, 
     body: `
@@ -31,4 +33,5 @@
     `
 }) %>
 </body>
+
 </html>

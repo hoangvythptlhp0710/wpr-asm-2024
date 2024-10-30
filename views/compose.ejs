@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Inbox</title>
-    <link rel="stylesheet" href="./css/outbox.css" />
-  </head>
-   <body>
 
-<%- include('layout', { 
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inbox</title>
+  <link rel="stylesheet" href="./css/outbox.css" />
+</head>
+
+<body>
+
+  <%- include('layout', { 
     title: 'Compose Email', 
     user: user, 
     body: `
@@ -41,168 +43,187 @@
     `
 }) %>
 
-<style>
-/* General styles */
-body {
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 20px;
-    background-color: #f5f5f5;
-}
+  <style>
+    /* General styles */
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
 
-/* Compose Section */
-section {
-    background: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-    padding: 20px;
-    max-width: 600px; /* Limit the width */
-    margin: auto; /* Center the section */
-}
-
-/* Heading */
-h2 {
-    margin-top: 0;
-    color: #202124; /* Dark text color */
-    font-weight: normal; /* Use normal weight for a clean look */
-}
-
-/* Form styles */
-form {
-    display: flex;
-    flex-direction: column; /* Stack the form elements vertically */
-}
-
-/* Label styles */
-label {
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #5f6368; /* Lighter text color for labels */
-}
-
-/* Input and textarea styles */
-input[type="text"],
-select,
-textarea {
-    border: 1px solid #dadce0; /* Light gray border */
-    border-radius: 4px;
-    padding: 10px;
-    margin-bottom: 15px; /* Spacing between elements */
-    font-size: 14px; /* Slightly smaller font */
-    transition: border-color 0.3s; /* Smooth transition for border color */
-}
-
-/* Input focus styles */
-input[type="text"]:focus,
-textarea:focus {
-    border-color: #4285f4; /* Blue border on focus */
-    outline: none; /* Remove outline */
-}
-
-/* Textarea specific styles */
-textarea {
-    min-height: 100px; /* Minimum height for the message body */
-    resize: vertical; /* Allow vertical resizing only */
-}
-
-/* Button styles */
-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s;
-}
-
-button:hover {
-    background-color: #0056b3; /* Darker shade on hover */
-}
-
-/* Message area */
-#message {
-    margin-top: 20px;
-    font-size: 16px;
-    color: #333; /* Default text color */
-}
-
-/* Attachment styles */
-.attachment {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.attachment a {
-    margin-left: 10px;
-    color: #1a0dab; /* Link color */
-    text-decoration: none;
-}
-
-.attachment a:hover {
-    text-decoration: underline; /* Underline on hover */
-}
-
-/* Responsive styles */
-@media (max-width: 600px) {
+    /* Compose Section */
     section {
-        padding: 15px;
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      padding: 20px;
+      max-width: 600px;
+      /* Limit the width */
+      margin: auto;
+      /* Center the section */
     }
 
-    button {
-        padding: 8px 12px;
+    /* Heading */
+    h2 {
+      margin-top: 0;
+      color: #202124;
+      /* Dark text color */
+      font-weight: normal;
+      /* Use normal weight for a clean look */
     }
 
+    /* Form styles */
+    form {
+      display: flex;
+      flex-direction: column;
+      /* Stack the form elements vertically */
+    }
+
+    /* Label styles */
+    label {
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #5f6368;
+      /* Lighter text color for labels */
+    }
+
+    /* Input and textarea styles */
     input[type="text"],
     select,
     textarea {
-        font-size: 12px;
+      border: 1px solid #dadce0;
+      /* Light gray border */
+      border-radius: 4px;
+      padding: 10px;
+      margin-bottom: 15px;
+      /* Spacing between elements */
+      font-size: 14px;
+      /* Slightly smaller font */
+      transition: border-color 0.3s;
+      /* Smooth transition for border color */
     }
-}
-</style>
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("compose-form");
-    const messageDiv = document.getElementById("message");
+    /* Input focus styles */
+    input[type="text"]:focus,
+    textarea:focus {
+      border-color: #4285f4;
+      /* Blue border on focus */
+      outline: none;
+      /* Remove outline */
+    }
 
-    form.addEventListener("submit", async (event) => {
+    /* Textarea specific styles */
+    textarea {
+      min-height: 100px;
+      /* Minimum height for the message body */
+      resize: vertical;
+      /* Allow vertical resizing only */
+    }
+
+    /* Button styles */
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+      /* Darker shade on hover */
+    }
+
+    /* Message area */
+    #message {
+      margin-top: 20px;
+      font-size: 16px;
+      color: #333;
+      /* Default text color */
+    }
+
+    /* Attachment styles */
+    .attachment {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .attachment a {
+      margin-left: 10px;
+      color: #1a0dab;
+      /* Link color */
+      text-decoration: none;
+    }
+
+    .attachment a:hover {
+      text-decoration: underline;
+      /* Underline on hover */
+    }
+
+    /* Responsive styles */
+    @media (max-width: 600px) {
+      section {
+        padding: 15px;
+      }
+
+      button {
+        padding: 8px 12px;
+      }
+
+      input[type="text"],
+      select,
+      textarea {
+        font-size: 12px;
+      }
+    }
+  </style>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("compose-form");
+      const messageDiv = document.getElementById("message");
+
+      form.addEventListener("submit", async (event) => {
         event.preventDefault(); // Prevent default form submission
 
         const formData = new FormData(form);
         const recipient = formData.get("recipient");
 
         if (!recipient) {
-            messageDiv.textContent = "Please select a recipient.";
-            messageDiv.style.color = "red";
-            return;
+          messageDiv.textContent = "Please select a recipient.";
+          messageDiv.style.color = "red";
+          return;
         }
 
         try {
-            const response = await fetch("/sendEmail", {
-                method: "POST",
-                body: formData
-            });
+          const response = await fetch("/sendEmail", {
+            method: "POST",
+            body: formData
+          });
 
-            const result = await response.json();
+          const result = await response.json();
 
-            if (response.ok) {
-                messageDiv.textContent = "Email sent successfully!";
-                messageDiv.style.color = "green";
-                form.reset(); // Clear the form
-            } else {
-                messageDiv.textContent = result.message || "Failed to send email.";
-                messageDiv.style.color = "red";
-            }
-        } catch (error) {
-            console.error("Error:", error);
-            messageDiv.textContent = "An error occurred while sending the email.";
+          if (response.ok) {
+            messageDiv.textContent = "Email sent successfully!";
+            messageDiv.style.color = "green";
+            form.reset(); // Clear the form
+          } else {
+            messageDiv.textContent = result.message || "Failed to send email.";
             messageDiv.style.color = "red";
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          messageDiv.textContent = "An error occurred while sending the email.";
+          messageDiv.style.color = "red";
         }
+      });
     });
-});
-</script>
+  </script>
 </body>
+
 </html>
